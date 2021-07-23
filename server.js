@@ -4,13 +4,12 @@ const app = express();
 const { quotes } = require("./data");
 const { getRandomElement } = require("./utils");
 
-const PORT = process.env.PORT || 4001;
+const PORT = process.env.PORT || 4002;
 
 app.use(express.static("public"));
 
 app.get("/api/quotes/random", (req, res, next) => {
-  const quote = getRandomElement(quotes);
-  res.status(200).send(quote);
+  res.send({ quote: getRandomElement(quotes) });
 });
 
 app.get("/api/quotes", (req, res, next) => {
@@ -18,9 +17,9 @@ app.get("/api/quotes", (req, res, next) => {
     const quotesByPerson = quotes.filter((quote) => {
       return quote.person === req.query.person;
     });
-    res.send(quotesByPerson);
+    res.send({ quotes: quotesByPerson });
   } else {
-    res.send(quotes);
+    res.send({ quotes: quotes });
   }
 });
 
@@ -30,7 +29,7 @@ app.post("/api/quotes", (req, res, next) => {
   if (person && quote) {
     const newQuote = { person: person, quote: quote };
     quotes.push(newQuote);
-    res.send(newQuote);
+    res.send({ quote: newQuote });
   } else {
     res.status(400).send();
   }
